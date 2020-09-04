@@ -59,9 +59,12 @@ class ImageFolderDataset(Dataset):
         #   - images should only contain file paths, NOT the actual images     #
         #   - sort images by class and file name (ascending)                   #
         ########################################################################
-
-        pass
-
+        for clas, label in class_to_idx.items():
+            class_path = os.path.join(directory, clas)
+            for _, _, files in os.walk(class_path):
+                for f in sorted(files):
+                    images.append(os.path.join(class_path, f))
+                    labels.append(label)
         ########################################################################
         #                           END OF YOUR CODE                           #
         ########################################################################
@@ -75,7 +78,7 @@ class ImageFolderDataset(Dataset):
         # Return the length of the dataset (number of images)                  #
         ########################################################################
 
-        pass
+        length = len(self.images)
 
         ########################################################################
         #                           END OF YOUR CODE                           #
@@ -98,9 +101,10 @@ class ImageFolderDataset(Dataset):
         #   - use load_image_as_numpy() to load an image from a file path      #
         #   - Make sure to apply self.transform to the image                   #
         ########################################################################
-
-        pass
-
+        image = np.asarray(Image.open(self.images[index]))
+        if(self.transform != None):
+            self.transform(image)
+        data_dict = {'image' : image, 'label': self.labels[index]}
         ########################################################################
         #                           END OF YOUR CODE                           #
         ########################################################################
