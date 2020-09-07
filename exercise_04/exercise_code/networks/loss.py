@@ -33,11 +33,10 @@ class L1(Loss):
         #########################################################################
         # Implement the forward pass and return the output of the L1 loss.      #
         #########################################################################
-        result = np.average(np.abs(y_truth - y_out))
+        result = np.abs(y_truth - y_out)
         #########################################################################
         #                       END OF YOUR CODE                                #
         #########################################################################
-
         return result
     
     def backward(self,y_out, y_truth):
@@ -54,18 +53,17 @@ class L1(Loss):
         # Implement the backward pass. Return the gradient wrt y_out              #
         # hint: you may use np.where here.                                        #
         ###########################################################################
-        l1 = np.average(y_truth - y_out)
-        if l1 >= 0:
-            gradient = -1.0
-        else:
-            gradient = 1.0
+        loss = y_truth -y_out;
+        gradient = np.zeros(loss.shape[0])
+        gradient[np.argwhere(loss > 0.0)] = -1.0
+        gradient[np.argwhere(loss < 0.0)] = 1.0
+        gradient[np.argwhere(loss==0)] = 0.0
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################        
         return gradient
 
 class MSE(Loss):
-  
 
     def forward(self,y_out, y_truth):
         """
@@ -77,14 +75,12 @@ class MSE(Loss):
         """    
         result = None
         #########################################################################
-        # TODO:                                                                 #
         # Implement the forward pass and return the output of the MSE loss.     #
         #########################################################################
-
+        result = np.square(y_truth - y_out)
         #########################################################################
         #                       END OF YOUR CODE                                #
         #########################################################################
-        
         return result
     
     def backward(self,y_out, y_truth):
@@ -98,11 +94,10 @@ class MSE(Loss):
         """
         gradient = None
         ###########################################################################
-        # TODO:                                                                   #
         # Implement the backward pass. Return the gradient wrt y_out              #
         ###########################################################################
 
-
+        gradient = -2*(y_truth - y_out)
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################   

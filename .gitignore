@@ -1,4 +1,8 @@
 datasets
 *.ipynb
+*.zip
 *.pyc
 *__pycache__
+*.swp
+*.swap
+*.swo
