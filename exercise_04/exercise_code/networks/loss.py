@@ -113,13 +113,10 @@ class BCE(Loss):
                 y_truth: [N, ] array ground truth value of your training set. 
         :return: [N, ] array of binary cross entropy loss for each sample of your training set. 
         """    
-        result = None
         #########################################################################
-        # TODO:                                                                 #
         # Implement the forward pass and return the output of the BCE loss.     #
         #########################################################################
-
-
+        result = -y_truth*np.log(y_out) - ((1-y_truth)*np.log(1-y_out))
         #########################################################################
         #                       END OF YOUR CODE                                #
         #########################################################################
@@ -135,14 +132,11 @@ class BCE(Loss):
         :return: [N, ] array of binary cross entropy loss gradients w.r.t y_out for 
                   each sample of your training set. 
         """
-        gradient = None
 
         ###########################################################################
-        # TODO:                                                                   #
         # Implement the backward pass. Return the gradient wrt y_out              #
         ###########################################################################
-
-
+        gradient = (-y_truth/y_out) + ( (1-y_truth)/(1-y_out))
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################   
