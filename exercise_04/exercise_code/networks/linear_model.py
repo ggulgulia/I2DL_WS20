@@ -46,7 +46,6 @@ class LinearModel(Network):
         # output variable
         y = None
         #########################################################################
-        # TODO:                                                                 #
         # Implement the forward pass and return the output of the model.        #
         #########################################################################
         y = X @ self.W
@@ -65,11 +64,10 @@ class LinearModel(Network):
         assert self.cache is not None, "run a forward pass before the backward pass"
         dW = None
         ###########################################################################
-        # TODO:                                                                   #
         # Implement the backward pass. Return the gradient wrt W, dW              #
         # The data X are stored in self.cache.                                    #
         ###########################################################################
-
+        dW = self.cache
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################

@@ -105,7 +105,6 @@ class MSE(Loss):
 
 class BCE(Loss):
   
-
     def forward(self,y_out, y_truth):
         """
         Performs the forward pass of the binary cross entropy loss function.

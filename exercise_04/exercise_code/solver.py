@@ -90,8 +90,7 @@ class Solver(object):
         y_train = self.y_train
         opt = self.opt
         ###########################################################################
-        #   TODO: 													              #
-        #	Get the gradients dhat{y} / dW and dLoss / dhat{y}. 	              #
+        #	Get the gradients dhat{y} / dW and dLoss / dhat{y}. 	          #
         #   Combine them via the chain rule to obtain dLoss / dW.                 #
         #   Proceed by performing an optimizing step using the given              #
         #   optimizer (by calling opt.step() with the gradient wrt W)             #
@@ -100,6 +99,12 @@ class Solver(object):
         #   gradient!                                                             #
         ###########################################################################
 
+        model.train()
+        model_forward,model_backward = model(X_train)
+        loss, loss_grad = loss_func(model_forward, y_train)
+        grad = loss_grad * model_backward
+        grad = np.mean(grad, 0, keepdims = True)
+        opt.step(grad.T)
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################  
