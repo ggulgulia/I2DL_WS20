@@ -25,7 +25,6 @@ class DataLoader:
 
     def __iter__(self):
         ########################################################################
-        # TODO:                                                                #
         # Define an iterable function that samples batches from the dataset.   #
         # Each batch should be a dict containing numpy arrays of length        #
         # batch_size (except for the last batch if drop_last=True)             #
@@ -38,9 +37,31 @@ class DataLoader:
         #     keyword, see https://wiki.python.org/moin/Generators             #
         #   - Have a look at the "DataLoader" notebook first                   #
         ########################################################################
+        dataset, drop_last = self.dataset, self.drop_last
+        batch_size = self.batch_size
+        data_len = len(dataset)
+        rem = data_len%batch_size
+        if self.shuffle:
+            indx_iter = iter(np.random.permutation(data_len - rem))
+        else:
+            indx_iter = iter(range(data_len - rem))
+        
+        arr = []
+        for index in indx_iter:  # iterate over indices using the iterator
+            arr.append(dataset[index]['data'])
+            if len(arr) == batch_size:
+                arr = np.array(arr)
+                
+                yield {'data':arr}  # use yield keyword to define a iterable generator
+                arr = []
 
-        pass
+        if drop_last is False:
+            arr = []
+            for i in range(data_len - rem , data_len):
+                arr.append(dataset[i]['data'])
 
+            arr = np.array(arr)
+            yield {'data': arr}
         ########################################################################
         #                           END OF YOUR CODE                           #
         ########################################################################
@@ -48,13 +69,12 @@ class DataLoader:
     def __len__(self):
         length = None
         ########################################################################
-        # TODO:                                                                #
         # Return the length of the dataloader                                  #
         # Hint: this is the number of batches you can sample from the dataset  #
         ########################################################################
-
-        pass
-
+        length = int(len(self.dataset)/self.batch_size)
+        if self.drop_last is False:
+            length += 1
         ########################################################################
         #                           END OF YOUR CODE                           #
         ########################################################################
