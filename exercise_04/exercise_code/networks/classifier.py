@@ -44,15 +44,11 @@ class Classifier(Network):
         # save the samples for the backward pass
         self.cache = X
         # output variable
-        y = None
         #########################################################################
-        # TODO:                                                                 #
         # Implement the forward pass and return the output of the model. Note   # 
         # that you need to implement the function self.sigmoid() for that       #  
         #########################################################################
-
-
-
+        y = self.sigmoid(X)
         #########################################################################
         #                       END OF YOUR CODE                                #
         #########################################################################
@@ -66,17 +62,13 @@ class Classifier(Network):
         :return: Gradient of the model output (y=sigma(X*W)) wrt W
         """
         assert self.cache is not None, "run a forward pass before the backward pass"
-        dW = None
         ###########################################################################
-        # TODO:                                                                   #
         # Implement the backward pass. Return the gradient wrt W, dW              #
         # The data X is stored in self.cache. Be careful with the dimensions of   #
         # W, X and y and note that the derivative of the sigmoid fct can be       #
         # expressed by sigmoids itself (--> use the function self.sigmoid() here) # 
         ###########################################################################
-
-
-
+        dW = y*(1-y)
         ###########################################################################
         #                           END OF YOUR CODE                              #
         ###########################################################################
@@ -89,12 +81,10 @@ class Classifier(Network):
         :param x: input of the sigmoid, np.array of any shape
         :return: output of the sigmoid with same shape as input vector x
         """
-        out = None
         #########################################################################
-        # TODO:                                                                 #
         # Implement the sigmoid function, return out                            #
         #########################################################################
-
+        out = 1.0/(1+np.exp(-x))
         #########################################################################
         #                       END OF YOUR CODE                                #
         #########################################################################
