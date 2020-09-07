@@ -103,7 +103,7 @@ class ImageFolderDataset(Dataset):
         ########################################################################
         image = np.asarray(Image.open(self.images[index]))
         if(self.transform != None):
-            self.transform(image)
+            image = self.transform(image)
         data_dict = {'image' : image, 'label': self.labels[index]}
         ########################################################################
         #                           END OF YOUR CODE                           #
@@ -125,7 +125,8 @@ def compute_image_mean_and_std(images):
     # Hint: You can use numpy to calculate mean and standard deviation     #
     ########################################################################
 
-    pass
+    mean = np.mean(images, axis=0)
+    std = np.std(images, axis=0)
 
     ########################################################################
     #                           END OF YOUR CODE                           #
@@ -154,8 +155,7 @@ class RescaleTransform:
         #   - to (self.min, self.max)                                          #
         ########################################################################
 
-        pass
-
+        images = self.min  + images*(self.max)/(self._data_max - self._data_min)
         ########################################################################
         #                           END OF YOUR CODE                           #
         ########################################################################
