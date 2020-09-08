@@ -21,8 +21,8 @@ def affine_forward(x, w, b):
     ########################################################################
     # You will need to reshape the input into rows.                        #
     ########################################################################
-    x = x.reshape(x.shape[0], np.product(x.shape[1:]))
-    out = x @ w + b
+    x_reshape = x.reshape(x.shape[0], np.product(x.shape[1:]))
+    out = x_reshape @ w + b
     ########################################################################
     #                           END OF YOUR CODE                           #
     ########################################################################
@@ -48,10 +48,15 @@ def affine_backward(dout, cache):
     x, w, b = cache
     dx, dw, db = None, None, None
     ########################################################################
-    # TODO Implement the affine backward pass.                             #
+    # Implement the affine backward pass.                                  #
     # Hint: Don't forget to average the gradients dw and db                #
     ########################################################################
     #print("dout.shape, x.shape, w.shape, b.shape", dout.shape, x.shape, w.shape, b.shape)
+    dx = np.matmul(dout, w.T)
+    dx = dx.reshape(x.shape)
+    x_temp = x.reshape(x.shape[0], np.product(x.shape[1:]))
+    dw = np.matmul(x_temp.T, dout)/x.shape[0]
+    db = np.matmul(dout.T, np.ones((dout.shape[0]), dtype=float))/x.shape[0]
     ########################################################################
     #                           END OF YOUR CODE                           #
     ########################################################################
