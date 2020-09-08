@@ -61,7 +61,6 @@ class RegressionNet(Network):
         y = None
 
         ########################################################################
-        # TODO                                                                 #
         # Implement the forward pass using the layers you implemented.         #
         # It consists of 3 steps:                                              #
         #   1. Forward the first affine layer                                  #
@@ -69,10 +68,14 @@ class RegressionNet(Network):
         #   3. Forward the second affine layer                                 #
         # (Dont't forget the caches)                                           #
         ########################################################################
+        y1 = np.matmul(X, W1) + b1
+        cache_affine1 = y1
 
+        sig_y1 = sigmoid_forward(y1)
+        cache_sigmoid = sig_y1
 
-        pass
-
+        y = np.matmul(sig_y1, W2) + b2
+        cache_affine2 = y
         ########################################################################
         #                           END OF YOUR CODE                           #
         ########################################################################
