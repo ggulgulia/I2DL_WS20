@@ -71,7 +71,8 @@ class RegressionNet(Network):
         y1 = np.matmul(X, W1) + b1
         cache_affine1 = y1
 
-        sig_y1 = sigmoid_forward(y1)
+        sig_y1 = 1.0/(1+np.exp(-y1))
+        #sig_y1 = sigmoid_forward(y1)
         cache_sigmoid = sig_y1
 
         y = np.matmul(sig_y1, W2) + b2
@@ -129,7 +130,7 @@ class RegressionNet(Network):
         W2, b2 = self.params['W2'], self.params['b2']
 
         y = cache_affine2
-        sig_y1 = cache_sigmoid[0]
+        sig_y1 = cache_sigmoid
         """
         Always start computing gradients backwards
         this is easy to understand since NN is nothing
@@ -138,17 +139,18 @@ class RegressionNet(Network):
         element wise matrix multiplication, also known as Hadamard product
         """
         dW2 = np.multiply(dy, sig_y1)
-        dW2 = np.sum(np.sum(dW2, axis=0).T, axis=1)
+        dW2 = np.sum(dW2, axis=0)
         dW2 = dW2.reshape(W2.shape)/N
 
         db2 = dy * np.ones(b2.shape)
-        print(db2.shape)
         db2 = np.reshape(np.sum(db2), b2.shape)/N
 
         ## try deriving dL/dy1 (here simply denoted as dy1)
         ## by hand, and same for sigmoid(y1)
         dsig_y1 = sig_y1*(1-sig_y1)
-        dy1 = np.sum(dy*(W2 * dsig_y1.T).T, axis=0)
+
+        inter = (W2 * dsig_y1.T).T
+        dy1 = dy*(W2 * dsig_y1.T).T
 
         dW1 = np.matmul(X.T, dy1)/N
         db1 = np.sum(np.multiply(dy1, np.ones(b1.shape)), axis=0)/N
