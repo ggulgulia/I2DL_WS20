@@ -154,6 +154,20 @@ class ClassificationNet(Network):
 
         return labels, preds, acc
 
+def Xavier(m,n):
+    """
+    xavier weight initialization suitable for 
+    networks with tanh and sigmoid activation
+    functions
+    """
+    return np.random.uniform(-1,1, (m,n))*math.sqrt(6.0/(m+n))
+
+def Kaiming(m,n):
+    """
+    kaiming weight initialization suitable for
+    networks with ReLU activation functions
+    """
+    return np.random.randn(m,n)*math.sqrt(2.0/m)
 
 class MyOwnNetwork(ClassificationNet):
     """
@@ -175,14 +189,47 @@ class MyOwnNetwork(ClassificationNet):
         out the classification network above.
         """
 
-        super(ClassificationNet, self).__init__("cifar10_classification_net")
+        super(MyOwnNetwork, self).__init__("cifar10_classification_net")
 
         ########################################################################
         # TODO:  Your initialization here                                      #
         ########################################################################
 
+        self.activation = activation
+        self.weight_initialization=None
 
-        pass
+        if self.activation is Sigmoid or Tanh:
+            self.weight_initialization = Xavier
+        elif self.activation is Relu or LeakyRelu:
+            self.weight_initialization = Kaiming
+
+        self.reg_strength = reg
+
+        self.cache = None
+
+        self.memory = 0
+        self.memory_forward = 0
+        self.memory_backward = 0
+        self.num_operation = 0
+
+        # Initialize random gaussian weights for all layers and zero bias
+        self.num_layer = num_layer
+        self.params = {'W1': std * self.weight_initialization(input_size, hidden_size),
+                       'b1': np.zeros(hidden_size)}
+
+        for i in range(num_layer - 2):
+            self.params['W' + str(i + 2)] = self.weight_initialization(hidden_size, hidden_size)
+            self.params['b' + str(i + 2)] = np.zeros(hidden_size)
+
+        self.params['W' + str(num_layer)] = self.weight_initialization(hidden_size, num_classes)
+        self.params['b' + str(num_layer)] = np.zeros(num_classes)
+
+        self.grads = {}
+        self.reg = {}
+        for i in range(num_layer):
+            self.grads['W' + str(i + 1)] = 0.0
+            self.grads['b' + str(i + 1)] = 0.0
+
 
         ########################################################################
         #                           END OF YOUR CODE                           #
@@ -193,8 +240,6 @@ class MyOwnNetwork(ClassificationNet):
         ########################################################################
         # TODO:  Your forward here                                             #
         ########################################################################
-
-
         pass
 
         ########################################################################
