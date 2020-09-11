@@ -1,18 +1,16 @@
-import torch.nn as nn
 from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 import torchvision.transforms as transforms
-import os, pandas as pd, numpy as np, matplotlib.pyplot as plt
-import pathlib.Path as Path
+import torchvision
 
 class Dataset():
-    __init__(self)
+    def __init__(self):
+        pass
+    
 
-    @abstractmethod
     def create(self):
         pass
 
-    @abstractmethod
     def dataLoader(self):
         pass
 
@@ -28,15 +26,15 @@ class MNISTDataSetAndLoader():
     batch_size: batch size for training and testing
     transform: desired transformations to be applied
     """
-    __init__(self, mnist_root_dir='.', batch_size=1,
+    def __init__(self, mnist_root_dir='.', batch_size=1,
             transform = transforms.Compose([transforms.ToTensor(),
-            transforms.Normalize((0.5,),(0.5,))]))
+                transforms.Normalize((0.5,),(0.5,))])):
     
-    self.mnist_root_dir = mnist_root_dir
-    self.batch_size = batch_size
-    self.transform = transform
-    self.fashion_mnist_dataset = None
-    self.fashion_mnist_dataloader = None
+        self.mnist_root_dir = mnist_root_dir
+        self.batch_size = batch_size
+        self.transform = transform
+        self.fashion_mnist_dataset = None
+        self.fashion_mnist_dataloader = None
 
     def create(self, mode = ['train', 'test'], download=False):
         """
@@ -62,7 +60,7 @@ class MNISTDataSetAndLoader():
                 train=False
 
             cur_datset = \
-            torchvision.datasets.FashionMNIST(root=self.root, train=train, download=download, transform=self.transform)
+            torchvision.datasets.FashionMNIST(root=self.mnist_root_dir, train=train, download=download, transform=self.transform)
 
             fashion_mnist_dataset[m] = cur_datset
 
