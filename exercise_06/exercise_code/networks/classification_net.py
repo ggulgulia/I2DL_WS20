@@ -236,11 +236,36 @@ class MyOwnNetwork(ClassificationNet):
         ########################################################################
 
     def forward(self, X):
-        out = None
+        y = None
         ########################################################################
         # TODO:  Your forward here                                             #
         ########################################################################
-        pass
+        self.cache = {}
+        self.reg = {}
+        X = X.reshape(X.shape[0], -1)
+        # Unpack variables from the params dictionary
+        for i in range(self.num_layer - 1):
+            W, b = self.params['W' + str(i + 1)], self.params['b' + str(i + 1)]
+
+            # Forward i_th layer
+            X, cache_affine = affine_forward(X, W, b)
+            self.cache["affine" + str(i + 1)] = cache_affine
+
+            # Activation function
+            X, cache_activation = self.activation.forward(X)
+            self.cache["activation" + str(i + 1)] = cache_sigmoid
+
+            # Store the reg for the current W
+            self.reg['W' + str(i + 1)] = np.sum(W ** 2) * self.reg_strength
+
+        # last layer contains no activation functions
+        W, b = self.params['W' + str(self.num_layer)],\
+               self.params['b' + str(self.num_layer)]
+        y, cache_affine = affine_forward(X, W, b)
+        self.cache["affine" + str(self.num_layer)] = cache_affine
+        self.reg['W' + str(self.num_layer)] = np.sum(W ** 2) * self.reg_strength
+
+        return y
 
         ########################################################################
         #                           END OF YOUR CODE                           #
@@ -248,16 +273,35 @@ class MyOwnNetwork(ClassificationNet):
         return out
 
     def backward(self, dy):
-        grads = None
+        self.grads = None
         ########################################################################
         # TODO:  Your backward here                                            #
         ########################################################################
+        # Note that last layer has no activation
+        cache_affine = self.cache['affine' + str(self.num_layer)]
+        dh, dW, db = affine_backward(dy, cache_affine)
+        self.grads['W' + str(self.num_layer)] = \
+            dW + 2 * self.reg_strength * self.params['W' + str(self.num_layer)]
+        self.grads['b' + str(self.num_layer)] = db
 
+        # The rest sandwich layers
+        for i in range(self.num_layer - 2, -1, -1):
+            # Unpack cache
+            cache_activation = self.cache['activation' + str(i + 1)]
+            cache_affine = self.cache['affine' + str(i + 1)]
 
-        pass
+            # Activation backward
+            dh = self.activation.backward(dh, cache_activation)
 
+            # Affine backward
+            dh, dW, db = affine_backward(dh, cache_affine)
+
+            # Refresh the gradients
+            self.grads['W' + str(i + 1)] = dW + 2 * self.reg_strength * \
+                                           self.params['W' + str(i + 1)]
+            self.grads['b' + str(i + 1)] = db
         ########################################################################
         #                           END OF YOUR CODE                           #
         ########################################################################
-        return grads
+        return self.grads
 
