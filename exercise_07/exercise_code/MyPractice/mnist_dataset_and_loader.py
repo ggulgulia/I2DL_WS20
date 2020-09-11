@@ -33,6 +33,7 @@ class MNISTDataSetAndLoader():
         self.mnist_root_dir = mnist_root_dir
         self.batch_size = batch_size
         self.transform = transform
+        self.mnist_classes = ('T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat','Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot')
         self.fashion_mnist_dataset = None
         self.fashion_mnist_dataloader = None
 
@@ -91,6 +92,9 @@ class MNISTDataSetAndLoader():
         self.fashion_mnist_dataloader = fashion_mnist_dataloader
 
         return fashion_mnist_dataloader
+
+    def get_class_names(self):
+        return self.mnist_classes
 
 ####################################################################
 #               END OF MNISTDatasetAndLoder class                  #
