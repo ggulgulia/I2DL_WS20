@@ -2,6 +2,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 import torchvision.transforms as transforms
 import torchvision
+import matplotlib.pyplot as plt
 
 class Dataset():
     def __init__(self):
