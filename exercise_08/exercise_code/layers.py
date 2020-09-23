@@ -126,20 +126,13 @@ def batchnorm_backward(dout, cache):
 
     divar = np.sum(dxnorm * xmu, axis=0)
     dxmu1 = dxnorm * ivar
-
     dsqrtvar = -1. / (sqrtvar ** 2) * divar
-
     dvar = 0.5 * 1. / np.sqrt(var + eps) * dsqrtvar
-
     dsq = 1. / N * np.ones((N, D)) * dvar
-
     dxmu2 = 2 * xmu * dsq
-
     dx1 = dxmu1 + dxmu2
     dmean = -1. * np.sum(dx1, axis=0)
-
     dx2 = 1. / N * np.ones((N, D)) * dmean
-
     dx = dx1 + dx2
 
     dbeta = np.sum(dout, axis=0)

@@ -147,12 +147,17 @@ class BatchNormNetwork(AbstractNetwork):
         # set hyperparams
         self.batch_size = batch_size
         self.learning_rate = learning_rate
-
+        
+        # note here how the batch normalization is applied
         self.model = nn.Sequential(
-            nn.Linear(input_size, hidden_dim),
+            nn.Linear(input_size, hidden_dim), #simple linear layer
+            ###################################################### 
+            #NOTE: BN applied after the first layer 
+            #before passing through activation function
             nn.BatchNorm1d(hidden_dim),
-            nn.ReLU(),            
-            nn.Linear(hidden_dim, num_classes)
+            ###################################################### 
+            nn.ReLU(),                         #relu layer  
+            nn.Linear(hidden_dim, num_classes) #output layer
         )
       
     def forward(self, x):
@@ -179,9 +184,9 @@ class DropoutNetwork(AbstractNetwork):
 
         self.model = nn.Sequential(
             nn.Linear(input_size, hidden_dim),
-            nn.BatchNorm1d(hidden_dim),
-            nn.ReLU(),   
-            nn.Dropout(dropout_p),         
+            nn.BatchNorm1d(hidden_dim),   #BN before activation
+            nn.ReLU(),                    # Activation
+            nn.Dropout(dropout_p),        # Dropout after activation
             nn.Linear(hidden_dim, num_classes)
         )
         
