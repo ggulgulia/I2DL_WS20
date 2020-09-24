@@ -13,7 +13,7 @@ class KeypointModel(pl.LightningModule):
         Warning: Don't change the method declaration (i.e. by adding more
             arguments), otherwise it might not work on the submission server
         """
-        super(KeypointModel, self).__init__()
+        super().__init__()
         self.hparams = hparams
         ########################################################################
         # TODO: Define all the layers of your CNN, the only requirements are:  #
@@ -27,10 +27,38 @@ class KeypointModel(pl.LightningModule):
         # and other layers (such as dropout or batch normalization) to avoid   #
         # overfitting.                                                         #
         ########################################################################
+        self.batch_size          = hparams.get('batch_size', 32)
+        self.lr                  = hparams.get('lr', 1e-4)
+        self.dropout_probability = hparams.get('dropout_probability', 0.5)
+        self.activation = hparams.get('activation', nn.ReLU())
+        #assuming input image (N, C,H,W) = (N, 1,96,96)
+        self.layer1 = nn.Sequential(
+                        nn.Conv2d(1, 32, kernel_size=5, stride=1, padding=2),
+                        nn.ReLU(),
+                        nn.MaxPool2d(kernel_size=2, stride=2)
+                        )
 
-
-        pass
-
+        ### 32 layers of size 48 x 48 after 1st layer ###
+        self.layer2 = nn.Sequential(
+                        nn.Conv2d(32, 64, kernel_size=5, stride=1, padding=2),
+                        nn.ReLU(),
+                        nn.MaxPool2d(kernel_size=2, stride=2)
+                       )
+        
+        self.layer3 = nn.Sequential(
+                        nn.Conv2d(64, 128, kernel_size=5, stride=1, padding=2),
+                        nn.ReLU(),
+                        nn.MaxPool2d(kernel_size=2, stride=2)
+                       )
+        self.layer4 = nn.Sequential(
+                        nn.Conv2d(128, 256, kernel_size=5, stride=1, padding=2),
+                        nn.ReLU(),
+                        nn.MaxPool2d(kernel_size=2, stride=2)
+                       )
+        self.fc1 = nn.Linear(256*6*6, 416)
+        self.fc2 = nn.Linear(416, 30)
+        self.dropout = nn.Dropout(0.5)
+        
         ########################################################################
         #                           END OF YOUR CODE                           #
         ########################################################################
@@ -41,10 +69,13 @@ class KeypointModel(pl.LightningModule):
         # for an input image x, forward(x) should return the                   #
         # corresponding predicted keypoints                                    #
         ########################################################################
-
-
-        pass
-
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+        x = x.view(x.shape[0], -1)
+        x = self.fc1(x)
+        x = self.fc2(x)
         ########################################################################
         #                           END OF YOUR CODE                           #
         ########################################################################

@@ -4,7 +4,12 @@ import matplotlib.pyplot as plt
 
 
 def show_all_keypoints(image, keypoints, pred_kpts=None):
-    """Show image with predicted keypoints"""
+    """
+    Show image with predicted keypoints
+    NOTE: some necessary transforms needed to 
+    display the image and the keypoints overlapped
+    on them
+    """
     image = (image.clone() * 255).view(96, 96)
     plt.imshow(image, cmap='gray')
     keypoints = keypoints.clone() * 48 + 48
